@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 8 Parkour | Movement Menu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #1a1a24;
+            --bg-card: #252532;
+            --bg-elevated: #2e2e3d;
+            --accent-primary: #00ff88;
+            --accent-secondary: #00ccff;
+            --accent-warm: #ff6b35;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --text-muted: #606070;
+            --border-subtle: rgba(255,255,255,0.12);
+            --border-accent: rgba(0,255,136,0.4);
+            --gradient-hero: linear-gradient(135deg, #00ff88 0%, #00ccff 50%, #7b61ff 100%);
+            --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, transparent 100%);
+            --shadow-glow: 0 0 60px rgba(0,255,136,0.15);
+            --shadow-card: 0 4px 24px rgba(0,0,0,0.4);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Noise texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* HERO SECTION - CLEAN & SIMPLE */
+        .hero {
+            position: relative;
+            padding: 100px 24px 60px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 30%, rgba(0,255,136,0.06) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            color: var(--accent-primary);
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .hero-unit-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3.5rem, 12vw, 7rem);
+            line-height: 1;
+            letter-spacing: 0.02em;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        .hero-desc {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        /* NAVIGATION */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 16px 24px;
+            background: rgba(10,10,15,0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .nav.visible {
+            transform: translateY(0);
+        }
+
+        .nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            color: var(--text-primary);
+        }
+
+        .nav-logo span {
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-link {
+            padding: 8px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+            background: var(--bg-card);
+        }
+
+        /* MAIN CONTENT */
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px 120px;
+        }
+
+        /* TRAFFIC LIGHT SECTION */
+        .traffic-section {
+            margin-bottom: 80px;
+        }
+
+        .traffic-container {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            padding: 40px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .traffic-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .traffic-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 900px) {
+            .traffic-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .traffic-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .traffic-item {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .traffic-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .traffic-item.red .traffic-dot {
+            background: #ff4757;
+            box-shadow: 0 0 20px rgba(255,71,87,0.4);
+        }
+
+        .traffic-item.yellow .traffic-dot {
+            background: #ffc107;
+            box-shadow: 0 0 20px rgba(255,193,7,0.4);
+        }
+
+        .traffic-item.green .traffic-dot {
+            background: var(--accent-primary);
+            box-shadow: 0 0 20px rgba(0,255,136,0.4);
+        }
+
+        .traffic-item.skip .traffic-dot {
+            background: #6b7280;
+            box-shadow: 0 0 20px rgba(107,114,128,0.4);
+        }
+
+        .traffic-content h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .traffic-content p {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        /* SECTION HEADERS */
+        .section {
+            margin-bottom: 80px;
+            scroll-margin-top: 100px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .section-icon {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            font-size: 28px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            letter-spacing: 0.02em;
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            font-size: 15px;
+            max-width: 600px;
+            margin-bottom: 32px;
+        }
+
+        /* SKILL CATEGORY */
+        .skill-category {
+            margin-bottom: 48px;
+        }
+
+        /* VIDEO CARD - NEW LAYOUT */
+        .video-card {
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 24px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+            align-items: center;
+        }
+
+        @media (max-width: 900px) {
+            .video-card {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .video-thumbnail-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            display: block;
+            background: var(--bg-elevated);
+            border-radius: var(--radius-md);
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .video-thumbnail:hover img {
+            transform: scale(1.05);
+        }
+
+        .video-play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-warm);
+            border-radius: 50%;
+            color: white;
+            opacity: 0.9;
+            transition: all 0.3s ease;
+        }
+
+        .video-thumbnail:hover .video-play-btn {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .video-play-btn svg {
+            width: 28px;
+            height: 28px;
+            margin-left: 4px;
+        }
+
+        .video-info {
+            padding: 28px 28px 28px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 800px) {
+            .video-info {
+                padding: 24px;
+            }
+        }
+
+        .video-info h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .video-info .prerequisite-badge {
+            align-self: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .video-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* PROGRESSION LIST */
+        .progression-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .progression-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--bg-elevated);
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .progression-item:hover {
+            background: var(--bg-primary);
+            border-color: var(--accent-primary);
+            transform: translateX(4px);
+        }
+
+        .progression-number {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: var(--bg-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 13px;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .progression-name {
+            flex: 1;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .progression-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--accent-warm);
+            background: rgba(255,107,53,0.15);
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .prerequisite-badge {
+            background: rgba(255,193,7,0.15);
+            border: 1px solid rgba(255,193,7,0.3);
+            color: #ffc107;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 100px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* MINI TRAFFIC LIGHT LEGEND */
+        .progression-legend {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+            padding: 14px 18px;
+            background: rgba(0,255,136,0.1);
+            border: 2px solid rgba(0,255,136,0.4);
+            border-radius: var(--radius-sm);
+        }
+
+        .legend-icon {
+            font-size: 24px;
+            line-height: 1;
+        }
+
+        .legend-text {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .legend-text strong {
+            color: var(--accent-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            background: rgba(0,255,136,0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        /* Keep old skill card styles for single-card layouts if needed */
+
+        /* TIPS BOX */
+        .tips-box {
+            background: rgba(0,255,136,0.05);
+            border: 1px solid rgba(0,255,136,0.2);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-top: 24px;
+        }
+
+        .tips-box h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-box ul {
+            list-style: none;
+            display: grid;
+            gap: 10px;
+        }
+
+        .tips-box li {
+            font-size: 14px;
+            color: var(--text-secondary);
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .tips-box li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent-primary);
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 60px 24px;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 60px;
+        }
+
+        .footer-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .footer-subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 60px 20px 40px;
+                min-height: 60vh;
+            }
+
+            .traffic-container {
+                padding: 28px 20px;
+            }
+
+            .skill-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVIGATION -->
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <div class="nav-logo">Grade 8 <span>Parkour</span></div>
+            <div class="nav-links">
+                <a href="#jumps" class="nav-link">Jumps</a>
+                <a href="#rolls" class="nav-link">Rolls</a>
+                <a href="#vaults" class="nav-link">Vaults</a>
+                <a href="#floor" class="nav-link">Floor</a>
+                <a href="#balance" class="nav-link">Balance</a>
+                <a href="#walls" class="nav-link">Wall Work</a>
+                <a href="#flow" class="nav-link">Flow</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <p class="hero-subtitle">Grade 8 Parkour</p>
+            <h1 class="hero-unit-title">MOVEMENT MENU</h1>
+            <p class="hero-desc">Find your level. Watch tutorials. Move at your own pace.</p>
+        </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        
+        <!-- TRAFFIC LIGHT SYSTEM -->
+        <section class="traffic-section">
+            <div class="traffic-container">
+                <h2 class="traffic-title">🚦 Traffic Light Self-Assessment</h2>
+                <div class="traffic-grid">
+                    <div class="traffic-item red">
+                        <div class="traffic-dot"></div>
+                        <div class="traffic-content">
+                            <h4>Exploring</h4>
+                            <p>I'm watching tutorials and attempting this skill. Still figuring it out.</p>
+                        </div>
+                    </div>
+                    <div class="traffic-item yellow">
+                        <div class="traffic-dot"></div>
+                        <div class="traffic-content">
+                            <h4>Developing</h4>
+                            <p>I can do this sometimes. Getting more consistent with practice.</p>
+                        </div>
+                    </div>
+                    <div class="traffic-item green">
+                        <div class="traffic-dot"></div>
+                        <div class="traffic-content">
+                            <h4>Got It</h4>
+                            <p>I'm confident with this skill. Ready to move on or help others.</p>
+                        </div>
+                    </div>
+                    <div class="traffic-item skip">
+                        <div class="traffic-dot"></div>
+                        <div class="traffic-content">
+                            <h4>Skipping</h4>
+                            <p>I've tried it or I don't feel safe. Moving on for now.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- JUMPS SECTION -->
+        <section class="section" id="jumps">
+            <div class="section-header">
+                <div class="section-icon">🦘</div>
+                <h2 class="section-title">JUMPS & LANDINGS</h2>
+            </div>
+            <p class="section-desc">Good landings protect your joints. Precision jumps teach you to land exactly where you want.</p>
+
+            <!-- Precision Jump -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=V_h3M_PMu1I" target="_blank" class="video-thumbnail">
+                            <img src="https://img.youtube.com/vi/V_h3M_PMu1I/mqdefault.jpg" alt="Precision Jump Tutorial">
+                            <div class="video-play-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Precision Jump</h3>
+                        <p class="video-desc">Land exactly where you intend. Start with the instructions and tips before attempting progressions.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=V_h3M_PMu1I&t=0s" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">Instructions</span>
+                                <span class="progression-time">0:00</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=V_h3M_PMu1I&t=2m5s" target="_blank" class="progression-item">
+                                <span class="progression-number">2</span>
+                                <span class="progression-name">Important Tips</span>
+                                <span class="progression-time">2:05</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=V_h3M_PMu1I&t=3m30s" target="_blank" class="progression-item">
+                                <span class="progression-number">3</span>
+                                <span class="progression-name">Ground Level Small Precisions</span>
+                                <span class="progression-time">3:30</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=V_h3M_PMu1I&t=3m43s" target="_blank" class="progression-item">
+                                <span class="progression-number">4</span>
+                                <span class="progression-name">Small Precisions Going Up</span>
+                                <span class="progression-time">3:43</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=V_h3M_PMu1I&t=3m55s" target="_blank" class="progression-item">
+                                <span class="progression-number">5</span>
+                                <span class="progression-name">Small Precisions Going Down</span>
+                                <span class="progression-time">3:55</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=V_h3M_PMu1I&t=4m7s" target="_blank" class="progression-item">
+                                <span class="progression-number">6</span>
+                                <span class="progression-name">Repeat Precisions</span>
+                                <span class="progression-time">4:07</span>
+                            </a>
+                            <div class="progression-legend">
+                                <span class="legend-icon">🚦</span>
+                                <span class="legend-text">Move to the next step once you're <strong>GREEN</strong> on your tracker</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ROLLS SECTION -->
+        <section class="section" id="rolls">
+            <div class="section-header">
+                <div class="section-icon">🔄</div>
+                <h2 class="section-title">ROLLS</h2>
+            </div>
+            <p class="section-desc">Rolls protect you from injury and help you keep moving. Master the Safety Roll before moving to Side and Back rolls.</p>
+
+            <!-- Safety Roll -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=6x-cG9giKXY" target="_blank" class="video-thumbnail">
+                            <img src="https://img.youtube.com/vi/6x-cG9giKXY/mqdefault.jpg" alt="Safety Rolls Tutorial">
+                            <div class="video-play-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Safety Roll (Shoulder Roll)</h3>
+                        <p class="video-desc">The foundation of parkour safety. Work through each progression in order.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=6x-cG9giKXY&t=0s" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">Kneeling Roll</span>
+                                <span class="progression-time">0:00</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=6x-cG9giKXY&t=4m48s" target="_blank" class="progression-item">
+                                <span class="progression-number">2</span>
+                                <span class="progression-name">Standing Roll</span>
+                                <span class="progression-time">4:48</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=6x-cG9giKXY&t=5m8s" target="_blank" class="progression-item">
+                                <span class="progression-number">3</span>
+                                <span class="progression-name">Jumping into Roll</span>
+                                <span class="progression-time">5:08</span>
+                            </a>
+                            <div class="progression-legend">
+                                <span class="legend-icon">🚦</span>
+                                <span class="legend-text">Move to the next step once you're <strong>GREEN</strong> on your tracker</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tips-box">
+                    <h4>💡 Key Tips</h4>
+                    <ul>
+                        <li>Roll DIAGONALLY across your back: shoulder to opposite hip</li>
+                        <li>Tuck your chin and look at your armpit as you roll</li>
+                        <li>Keep arms rounded, not straight - protect your shoulder</li>
+                        <li>Practice on both sides eventually</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Side Roll -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=6x-cG9giKXY&t=5m45s" target="_blank" class="video-thumbnail">
+                            <img src="https://img.youtube.com/vi/6x-cG9giKXY/mqdefault.jpg" alt="Side Roll Tutorial">
+                            <div class="video-play-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Side Roll</h3>
+                        <span class="prerequisite-badge">Complete Safety Roll First</span>
+                        <p class="video-desc">Roll sideways across your back.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=6x-cG9giKXY&t=5m45s" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">Side Roll</span>
+                                <span class="progression-time">5:45</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back Roll -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=6x-cG9giKXY&t=7m5s" target="_blank" class="video-thumbnail">
+                            <img src="https://img.youtube.com/vi/6x-cG9giKXY/mqdefault.jpg" alt="Back Roll Tutorial">
+                            <div class="video-play-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Back Roll</h3>
+                        <span class="prerequisite-badge">Complete Safety Roll First</span>
+                        <p class="video-desc">Rolling backward to your feet.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=6x-cG9giKXY&t=7m5s" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">Kneeling Forward into Backward</span>
+                                <span class="progression-time">7:05</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=6x-cG9giKXY&t=8m14s" target="_blank" class="progression-item">
+                                <span class="progression-number">2</span>
+                                <span class="progression-name">Standing Back Roll</span>
+                                <span class="progression-time">8:14</span>
+                            </a>
+                            <div class="progression-legend">
+                                <span class="legend-icon">🚦</span>
+                                <span class="legend-text">Move to the next step once you're <strong>GREEN</strong> on your tracker</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dive Roll & Drop to Roll -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=m-rIsUMjq5U&t=7m32s" target="_blank" class="video-thumbnail">
+                            <img src="https://img.youtube.com/vi/m-rIsUMjq5U/mqdefault.jpg" alt="Dive Roll and Drop to Roll Tutorial">
+                            <div class="video-play-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Dive Roll & Drop to Roll</h3>
+                        <span class="prerequisite-badge">Complete Safety Roll First</span>
+                        <p class="video-desc">Advanced roll applications - diving over obstacles and rolling from drops.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=m-rIsUMjq5U&t=7m32s" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">Dive Roll - Short Dive</span>
+                                <span class="progression-time">7:32</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=m-rIsUMjq5U&t=7m32s" target="_blank" class="progression-item">
+                                <span class="progression-number">2</span>
+                                <span class="progression-name">Dive Roll - Medium Dive</span>
+                                <span class="progression-time">7:32</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=m-rIsUMjq5U&t=7m32s" target="_blank" class="progression-item">
+                                <span class="progression-number">3</span>
+                                <span class="progression-name">Dive Roll - Longer Dive</span>
+                                <span class="progression-time">7:32</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=m-rIsUMjq5U&t=8m10s" target="_blank" class="progression-item">
+                                <span class="progression-number">4</span>
+                                <span class="progression-name">Dive Over Object</span>
+                                <span class="progression-time">8:10</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=m-rIsUMjq5U&t=8m12s" target="_blank" class="progression-item">
+                                <span class="progression-number">5</span>
+                                <span class="progression-name">Drop to Roll - Drag</span>
+                                <span class="progression-time">8:12</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=m-rIsUMjq5U&t=8m22s" target="_blank" class="progression-item">
+                                <span class="progression-number">6</span>
+                                <span class="progression-name">Drop to Roll - Adding Speed</span>
+                                <span class="progression-time">8:22</span>
+                            </a>
+                            <div class="progression-legend">
+                                <span class="legend-icon">🚦</span>
+                                <span class="legend-text">Move to the next step once you're <strong>GREEN</strong> on your tracker</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VAULTS SECTION -->
+        <section class="section" id="vaults">
+            <div class="section-header">
+                <div class="section-icon">🧱</div>
+                <h2 class="section-title">VAULTS</h2>
+            </div>
+            <p class="section-desc">Vaults help you get over obstacles efficiently. Start with the Safety Vault - it's your go-to when you're unsure.</p>
+
+            <!-- Safety Vault -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=OZFnbIOmmIY" target="_blank" class="video-thumbnail">
+                        <img src="https://img.youtube.com/vi/OZFnbIOmmIY/mqdefault.jpg" alt="Safety Vault Tutorial">
+                        <div class="video-play-btn">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Safety Vault (Step Vault)</h3>
+                        <p class="video-desc">Your fallback vault - use it when you're unsure. Hand AND foot contact = maximum control.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=OZFnbIOmmIY&t=49s" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">Foot Placement</span>
+                                <span class="progression-time">0:49</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=OZFnbIOmmIY&t=1m27s" target="_blank" class="progression-item">
+                                <span class="progression-number">2</span>
+                                <span class="progression-name">Two Hands</span>
+                                <span class="progression-time">1:27</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=OZFnbIOmmIY&t=1m27s" target="_blank" class="progression-item">
+                                <span class="progression-number">3</span>
+                                <span class="progression-name">Variations</span>
+                                <span class="progression-time">1:27</span>
+                            </a>
+                            <div class="progression-legend">
+                                <span class="legend-icon">🚦</span>
+                                <span class="legend-text">Move to the next step once you're <strong>GREEN</strong> on your tracker</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lazy Vault -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=3bLX2VJZMgk" target="_blank" class="video-thumbnail">
+                        <img src="https://img.youtube.com/vi/3bLX2VJZMgk/mqdefault.jpg" alt="Lazy Vault Tutorial">
+                        <div class="video-play-btn">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Lazy Vault</h3>
+                        <p class="video-desc">Swing your legs to the side over the obstacle.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=3bLX2VJZMgk" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">Lazy Vault</span>
+                                <span class="progression-time">0:00</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Speed Vault -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=ar-pYbemlXw" target="_blank" class="video-thumbnail">
+                        <img src="https://img.youtube.com/vi/ar-pYbemlXw/mqdefault.jpg" alt="Speed Vault Tutorial">
+                        <div class="video-play-btn">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Speed Vault</h3>
+                        <p class="video-desc">One hand vault for maintaining speed over obstacles.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=ar-pYbemlXw" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">Speed Vault</span>
+                                <span class="progression-time">0:00</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monkey & Kong Vault -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=lFvqnWhi-fQ" target="_blank" class="video-thumbnail">
+                        <img src="https://img.youtube.com/vi/lFvqnWhi-fQ/mqdefault.jpg" alt="Monkey and Kong Vault Tutorial">
+                        <div class="video-play-btn">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Monkey Vault & Kong Vault</h3>
+                        <p class="video-desc">Both hands on obstacle, legs through. Master Monkey before attempting Kong.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=lFvqnWhi-fQ&t=0s" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">Monkey vs Kong - The Difference</span>
+                                <span class="progression-time">0:00</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=lFvqnWhi-fQ&t=1m49s" target="_blank" class="progression-item">
+                                <span class="progression-number">2</span>
+                                <span class="progression-name">The Pop-Up (Do This First!)</span>
+                                <span class="progression-time">1:49</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=lFvqnWhi-fQ&t=2m10s" target="_blank" class="progression-item">
+                                <span class="progression-number">3</span>
+                                <span class="progression-name">Safety & Hand Placement</span>
+                                <span class="progression-time">2:10</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=lFvqnWhi-fQ&t=2m44s" target="_blank" class="progression-item">
+                                <span class="progression-number">4</span>
+                                <span class="progression-name">Kong Vault</span>
+                                <span class="progression-time">2:44</span>
+                            </a>
+                            <div class="progression-legend">
+                                <span class="legend-icon">🚦</span>
+                                <span class="legend-text">Move to the next step once you're <strong>GREEN</strong> on your tracker</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tips-box">
+                    <h4>💡 Key Tips</h4>
+                    <ul>
+                        <li>Master the pop-up drill before attempting full vaults</li>
+                        <li>Hands take your weight - build up arm strength</li>
+                        <li>Start on low obstacles, progress gradually</li>
+                        <li>Always have mats available when learning</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bonus: 10 Vaults -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=hbas1G_9JrI" target="_blank" class="video-thumbnail">
+                            <img src="https://img.youtube.com/vi/hbas1G_9JrI/mqdefault.jpg" alt="10 Vaults Tutorial">
+                            <div class="video-play-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>🎯 Bonus: 10 Vaults to Try</h3>
+                        <p class="video-desc">Ready for more? Explore different vault variations and find new challenges.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=hbas1G_9JrI" target="_blank" class="progression-item">
+                                <span class="progression-number">★</span>
+                                <span class="progression-name">Watch for inspiration</span>
+                                <span class="progression-time">Full video</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FLOOR MOVEMENT SECTION -->
+        <section class="section" id="floor">
+            <div class="section-header">
+                <div class="section-icon">🤸</div>
+                <h2 class="section-title">FLOOR MOVEMENT & TRICKS</h2>
+            </div>
+            <p class="section-desc">Ground-based movements that build coordination, strength, and body awareness.</p>
+
+            <!-- Quadrupedal Movement -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=ocV-i6Fh9-g" target="_blank" class="video-thumbnail">
+                            <img src="https://img.youtube.com/vi/ocV-i6Fh9-g/mqdefault.jpg" alt="Quadrupedal Movement Tutorial">
+                            <div class="video-play-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Quadrupedal Movement</h3>
+                        <p class="video-desc">Moving on all fours - builds strength and coordination for vaults.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=ocV-i6Fh9-g&t=1m35s" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">Bear Crawl</span>
+                                <span class="progression-time">1:35</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=ocV-i6Fh9-g&t=1m40s" target="_blank" class="progression-item">
+                                <span class="progression-number">2</span>
+                                <span class="progression-name">Kong Hop</span>
+                                <span class="progression-time">1:40</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=ocV-i6Fh9-g&t=2m47s" target="_blank" class="progression-item">
+                                <span class="progression-number">3</span>
+                                <span class="progression-name">Floor Safety Vault</span>
+                                <span class="progression-time">2:47</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=ocV-i6Fh9-g&t=3m16s" target="_blank" class="progression-item">
+                                <span class="progression-number">4</span>
+                                <span class="progression-name">Floor Side Vault</span>
+                                <span class="progression-time">3:16</span>
+                            </a>
+                            <div class="progression-legend">
+                                <span class="legend-icon">🚦</span>
+                                <span class="legend-text">Move to the next step once you're <strong>GREEN</strong> on your tracker</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cartwheel -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=GAbIx6oQAv4" target="_blank" class="video-thumbnail">
+                            <img src="https://img.youtube.com/vi/GAbIx6oQAv4/mqdefault.jpg" alt="Cartwheel Tutorial">
+                            <div class="video-play-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Cartwheel</h3>
+                        <p class="video-desc">A fundamental gymnastic movement. Work through the progressions step by step.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=GAbIx6oQAv4&t=31s" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">Lunge</span>
+                                <span class="progression-time">0:31</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=GAbIx6oQAv4&t=1m8s" target="_blank" class="progression-item">
+                                <span class="progression-number">2</span>
+                                <span class="progression-name">Lever</span>
+                                <span class="progression-time">1:08</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=GAbIx6oQAv4&t=1m28s" target="_blank" class="progression-item">
+                                <span class="progression-number">3</span>
+                                <span class="progression-name">Hands</span>
+                                <span class="progression-time">1:28</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=GAbIx6oQAv4&t=1m52s" target="_blank" class="progression-item">
+                                <span class="progression-number">4</span>
+                                <span class="progression-name">Baby Cartwheel</span>
+                                <span class="progression-time">1:52</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=GAbIx6oQAv4&t=2m3s" target="_blank" class="progression-item">
+                                <span class="progression-number">5</span>
+                                <span class="progression-name">Legs Using a Wall</span>
+                                <span class="progression-time">2:03</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=3Y7nbiEhu_o" target="_blank" class="progression-item">
+                                <span class="progression-number">6</span>
+                                <span class="progression-name">Using a Mat (bonus video)</span>
+                                <span class="progression-time">Full video</span>
+                            </a>
+                            <div class="progression-legend">
+                                <span class="legend-icon">🚦</span>
+                                <span class="legend-text">Move to the next step once you're <strong>GREEN</strong> on your tracker</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- The Scoot -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=ZlseIYawXiM" target="_blank" class="video-thumbnail">
+                            <img src="https://img.youtube.com/vi/ZlseIYawXiM/mqdefault.jpg" alt="The Scoot Tutorial">
+                            <div class="video-play-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>The Scoot</h3>
+                        <p class="video-desc">A fun floor movement to add to your repertoire.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=ZlseIYawXiM" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">The Scoot</span>
+                                <span class="progression-time">Full video</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BALANCE SECTION -->
+        <section class="section" id="balance">
+            <div class="section-header">
+                <div class="section-icon">⚖️</div>
+                <h2 class="section-title">BALANCE</h2>
+            </div>
+            <p class="section-desc">Balance is fundamental to all parkour movement. Master these skills before moving to rails and beams.</p>
+
+            <!-- Perpendicular Balance -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=SrJwYTMFagQ" target="_blank" class="video-thumbnail">
+                            <img src="https://img.youtube.com/vi/SrJwYTMFagQ/mqdefault.jpg" alt="Perpendicular Balance Tutorial">
+                            <div class="video-play-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Perpendicular Balance</h3>
+                        <p class="video-desc">Learn to balance on rails and narrow surfaces with proper technique.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=SrJwYTMFagQ&t=1m5s" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">Find the Balls of Your Feet</span>
+                                <span class="progression-time">1:05</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=SrJwYTMFagQ&t=1m29s" target="_blank" class="progression-item">
+                                <span class="progression-number">2</span>
+                                <span class="progression-name">Posture</span>
+                                <span class="progression-time">1:29</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=SrJwYTMFagQ&t=2m17s" target="_blank" class="progression-item">
+                                <span class="progression-number">3</span>
+                                <span class="progression-name">Squat Low & Use Your Hands</span>
+                                <span class="progression-time">2:17</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=SrJwYTMFagQ&t=2m36s" target="_blank" class="progression-item">
+                                <span class="progression-number">4</span>
+                                <span class="progression-name">Challenges</span>
+                                <span class="progression-time">2:36</span>
+                            </a>
+                            <div class="progression-legend">
+                                <span class="legend-icon">🚦</span>
+                                <span class="legend-text">Move to the next step once you're <strong>GREEN</strong> on your tracker</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Balance Game -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=aPEJzbekjlk" target="_blank" class="video-thumbnail">
+                            <img src="https://img.youtube.com/vi/aPEJzbekjlk/mqdefault.jpg" alt="Balance Game">
+                            <div class="video-play-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>🎯 Bonus: Balance Game</h3>
+                        <p class="video-desc">A fun game to practice and test your balance skills with friends.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=aPEJzbekjlk" target="_blank" class="progression-item">
+                                <span class="progression-number">★</span>
+                                <span class="progression-name">Watch for inspiration</span>
+                                <span class="progression-time">Full video</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- WALL WORK SECTION -->
+        <section class="section" id="walls">
+            <div class="section-header">
+                <div class="section-icon">🧗</div>
+                <h2 class="section-title">WALL WORK</h2>
+            </div>
+            <p class="section-desc">Using walls to gain height and move through the environment. Master climb ups before attempting wall runs.</p>
+
+            <!-- Basic Climb Ups -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=arAP26n3Paw" target="_blank" class="video-thumbnail">
+                            <img src="https://img.youtube.com/vi/arAP26n3Paw/mqdefault.jpg" alt="Basic Climb Ups Tutorial">
+                            <div class="video-play-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Basic Climb Ups</h3>
+                        <p class="video-desc">Learn to pull yourself up and over a wall from a hanging position.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=arAP26n3Paw&t=10s" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">Progression 1</span>
+                                <span class="progression-time">0:10</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=arAP26n3Paw&t=1m22s" target="_blank" class="progression-item">
+                                <span class="progression-number">2</span>
+                                <span class="progression-name">Progression 2</span>
+                                <span class="progression-time">1:22</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=arAP26n3Paw&t=2m47s" target="_blank" class="progression-item">
+                                <span class="progression-number">3</span>
+                                <span class="progression-name">Progression 3</span>
+                                <span class="progression-time">2:47</span>
+                            </a>
+                            <div class="progression-legend">
+                                <span class="legend-icon">🚦</span>
+                                <span class="legend-text">Move to the next step once you're <strong>GREEN</strong> on your tracker</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Climb Up -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=6U1sIgqgPFo" target="_blank" class="video-thumbnail">
+                            <img src="https://img.youtube.com/vi/6U1sIgqgPFo/mqdefault.jpg" alt="Full Climb Up Tutorial">
+                            <div class="video-play-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Full Climb Up</h3>
+                        <span class="prerequisite-badge">Complete Basic Climb Ups First</span>
+                        <p class="video-desc">Put it all together - the complete climb up movement.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=6U1sIgqgPFo" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">Full Climb Up</span>
+                                <span class="progression-time">Full video</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wall Run -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=iZo1t0c__eU" target="_blank" class="video-thumbnail">
+                            <img src="https://img.youtube.com/vi/iZo1t0c__eU/mqdefault.jpg" alt="Wall Run Tutorial">
+                            <div class="video-play-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Wall Run</h3>
+                        <span class="prerequisite-badge">Complete Climb Ups First</span>
+                        <p class="video-desc">Run up the wall to gain extra height before grabbing the top.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=iZo1t0c__eU&t=45s" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">The Approach</span>
+                                <span class="progression-time">0:45</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=iZo1t0c__eU&t=2m13s" target="_blank" class="progression-item">
+                                <span class="progression-number">2</span>
+                                <span class="progression-name">Mini Wall Jumps</span>
+                                <span class="progression-time">2:13</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=iZo1t0c__eU&t=3m25s" target="_blank" class="progression-item">
+                                <span class="progression-number">3</span>
+                                <span class="progression-name">Adding More Speed</span>
+                                <span class="progression-time">3:25</span>
+                            </a>
+                            <div class="progression-legend">
+                                <span class="legend-icon">🚦</span>
+                                <span class="legend-text">Move to the next step once you're <strong>GREEN</strong> on your tracker</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FLOW SECTION -->
+        <section class="section" id="flow">
+            <div class="section-header">
+                <div class="section-icon">🔗</div>
+                <h2 class="section-title">LINKING & FLOW</h2>
+            </div>
+            <p class="section-desc">Flow is about connecting movements smoothly. Once you've learned individual skills, start linking them together.</p>
+
+            <!-- Flow -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=jYLhuTA-Xhg" target="_blank" class="video-thumbnail">
+                            <img src="https://img.youtube.com/vi/jYLhuTA-Xhg/mqdefault.jpg" alt="Flow Tutorial">
+                            <div class="video-play-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Flow</h3>
+                        <p class="video-desc">Learn how to connect your movements smoothly and create your own sequences.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=jYLhuTA-Xhg" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">Flow Fundamentals</span>
+                                <span class="progression-time">Full video</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gallop Move -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=1D8-opu_IVQ" target="_blank" class="video-thumbnail">
+                            <img src="https://img.youtube.com/vi/1D8-opu_IVQ/mqdefault.jpg" alt="Gallop Move Tutorial">
+                            <div class="video-play-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Gallop Move</h3>
+                        <p class="video-desc">A useful transition movement to help link your skills together.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=1D8-opu_IVQ" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">Gallop Move for Flow</span>
+                                <span class="progression-time">Full video</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p class="footer-title">Your Movement, Your Way</p>
+        <p class="footer-subtitle">Growth matters more than perfection. Challenge yourself at YOUR level.</p>
+    </footer>
+
+    <script>
+        // Show nav on scroll
+        const nav = document.getElementById('nav');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                nav.classList.add('visible');
+            } else {
+                nav.classList.remove('visible');
+            }
+        });
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
