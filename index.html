@@ -10,17 +10,17 @@
     <style>
         :root {
             --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-card: #1a1a24;
-            --bg-elevated: #222230;
+            --bg-secondary: #1a1a24;
+            --bg-card: #252532;
+            --bg-elevated: #2e2e3d;
             --accent-primary: #00ff88;
             --accent-secondary: #00ccff;
             --accent-warm: #ff6b35;
             --text-primary: #ffffff;
             --text-secondary: #a0a0b0;
             --text-muted: #606070;
-            --border-subtle: rgba(255,255,255,0.06);
-            --border-accent: rgba(0,255,136,0.3);
+            --border-subtle: rgba(255,255,255,0.12);
+            --border-accent: rgba(0,255,136,0.4);
             --gradient-hero: linear-gradient(135deg, #00ff88 0%, #00ccff 50%, #7b61ff 100%);
             --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, transparent 100%);
             --shadow-glow: 0 0 60px rgba(0,255,136,0.15);
@@ -49,125 +49,158 @@
             overflow-x: hidden;
         }
 
-        /* HERO */
-        .hero {
-            text-align: center;
-            padding: 40px 20px 20px;
-            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+        /* Noise texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
         }
 
-        .hero-badge {
-            display: inline-block;
+        /* HERO SECTION - CLEAN & SIMPLE */
+        .hero {
+            position: relative;
+            padding: 100px 24px 60px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 30%, rgba(0,255,136,0.06) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            color: var(--accent-primary);
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .hero-unit-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3.5rem, 12vw, 7rem);
+            line-height: 1;
+            letter-spacing: 0.02em;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        .hero-desc {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        /* NAVIGATION */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 16px 24px;
+            background: rgba(10,10,15,0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .nav.visible {
+            transform: translateY(0);
+        }
+
+        .nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            color: var(--text-primary);
+        }
+
+        .nav-logo span {
             background: var(--gradient-hero);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
         }
 
-        .hero h1 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 4rem;
-            letter-spacing: 6px;
-            margin-bottom: 8px;
-        }
-
-        .hero .subtitle {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-
-        /* NAV */
-        .nav {
-            position: sticky;
-            top: 0;
-            background: rgba(10, 10, 15, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-subtle);
-            z-index: 100;
-            padding: 16px 20px;
-        }
-
-        .nav-inner {
+        .nav-links {
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
             gap: 8px;
-            max-width: 1200px;
-            margin: 0 auto;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        .nav a {
+        .nav-link {
+            padding: 8px 16px;
             color: var(--text-secondary);
             text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 100px;
             font-size: 13px;
             font-weight: 500;
+            border-radius: var(--radius-sm);
             transition: all 0.2s ease;
-            border: 1px solid transparent;
         }
 
-        .nav a:hover {
+        .nav-link:hover {
             color: var(--text-primary);
-            background: var(--bg-elevated);
-            border-color: var(--border-subtle);
+            background: var(--bg-card);
         }
 
-        /* MAIN */
+        /* MAIN CONTENT */
         .main {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 0 24px 120px;
         }
 
-        /* SECTION */
-        .section {
-            margin-bottom: 60px;
+        /* TRAFFIC LIGHT SECTION */
+        .traffic-section {
+            margin-bottom: 80px;
         }
 
-        .section-header {
+        .traffic-container {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            padding: 40px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .traffic-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            margin-bottom: 28px;
             display: flex;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 12px;
-        }
-
-        .section-icon {
-            font-size: 2.5rem;
-        }
-
-        .section-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 2.2rem;
-            letter-spacing: 3px;
-        }
-
-        .section-desc {
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-            font-size: 15px;
-        }
-
-        /* TRAFFIC LIGHT INFO */
-        .info-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: 28px;
-            margin-bottom: 40px;
-        }
-
-        .info-card h2 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.6rem;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-            text-align: center;
+            gap: 12px;
         }
 
         .traffic-grid {
@@ -189,30 +222,30 @@
         }
 
         .traffic-item {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 24px;
             display: flex;
             align-items: flex-start;
-            gap: 12px;
-            padding: 16px;
-            background: var(--bg-elevated);
-            border-radius: var(--radius-md);
+            gap: 16px;
+            border: 1px solid var(--border-subtle);
         }
 
         .traffic-dot {
-            width: 20px;
-            height: 20px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             flex-shrink: 0;
-            margin-top: 2px;
         }
 
         .traffic-item.red .traffic-dot {
-            background: #ef4444;
-            box-shadow: 0 0 20px rgba(239,68,68,0.4);
+            background: #ff4757;
+            box-shadow: 0 0 20px rgba(255,71,87,0.4);
         }
 
         .traffic-item.yellow .traffic-dot {
-            background: #f59e0b;
-            box-shadow: 0 0 20px rgba(245,158,11,0.4);
+            background: #ffc107;
+            box-shadow: 0 0 20px rgba(255,193,7,0.4);
         }
 
         .traffic-item.green .traffic-dot {
@@ -226,33 +259,74 @@
         }
 
         .traffic-content h4 {
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 600;
             margin-bottom: 4px;
         }
 
         .traffic-content p {
-            font-size: 12px;
             color: var(--text-secondary);
-            line-height: 1.4;
+            font-size: 13px;
         }
 
-        /* VIDEO CARD */
+        /* SECTION HEADERS */
+        .section {
+            margin-bottom: 80px;
+            scroll-margin-top: 100px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .section-icon {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            font-size: 28px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            letter-spacing: 0.02em;
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            font-size: 15px;
+            max-width: 600px;
+            margin-bottom: 32px;
+        }
+
+        /* SKILL CATEGORY */
         .skill-category {
-            margin-bottom: 24px;
+            margin-bottom: 48px;
         }
 
+        /* VIDEO CARD - NEW LAYOUT */
         .video-card {
             display: grid;
-            grid-template-columns: 460px 1fr;
-            gap: 0;
+            grid-template-columns: 420px 1fr;
+            gap: 24px;
             background: var(--bg-card);
             border-radius: var(--radius-lg);
             overflow: hidden;
             border: 1px solid var(--border-subtle);
+            align-items: center;
         }
 
-        @media (max-width: 950px) {
+        @media (max-width: 900px) {
             .video-card {
                 grid-template-columns: 1fr;
             }
@@ -262,8 +336,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-            background: var(--bg-elevated);
+            padding: 24px;
         }
 
         .video-thumbnail {
@@ -272,6 +345,7 @@
             aspect-ratio: 16/9;
             overflow: hidden;
             display: block;
+            background: var(--bg-elevated);
             border-radius: var(--radius-md);
         }
 
@@ -315,12 +389,12 @@
         }
 
         .video-info {
-            padding: 28px;
+            padding: 28px 28px 28px 0;
             display: flex;
             flex-direction: column;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 800px) {
             .video-info {
                 padding: 24px;
             }
@@ -335,18 +409,6 @@
         .video-info .prerequisite-badge {
             align-self: flex-start;
             margin-bottom: 12px;
-        }
-
-        .prerequisite-badge {
-            background: rgba(255,193,7,0.15);
-            border: 1px solid rgba(255,193,7,0.3);
-            color: #ffc107;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 100px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .video-desc {
@@ -388,16 +450,18 @@
             align-items: center;
             justify-content: center;
             background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            border-radius: 50%;
-            font-size: 13px;
-            font-weight: 700;
             color: var(--bg-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 13px;
+            border-radius: 6px;
+            flex-shrink: 0;
         }
 
         .progression-name {
             flex: 1;
-            font-size: 14px;
             font-weight: 500;
+            font-size: 15px;
         }
 
         .progression-time {
@@ -409,304 +473,188 @@
             border-radius: 4px;
         }
 
+        .prerequisite-badge {
+            background: rgba(255,193,7,0.15);
+            border: 1px solid rgba(255,193,7,0.3);
+            color: #ffc107;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 100px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* MINI TRAFFIC LIGHT LEGEND */
         .progression-legend {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
-            background: rgba(0,255,136,0.05);
-            border: 1px solid rgba(0,255,136,0.2);
+            gap: 12px;
+            margin-top: 16px;
+            padding: 14px 18px;
+            background: rgba(0,255,136,0.1);
+            border: 2px solid rgba(0,255,136,0.4);
             border-radius: var(--radius-sm);
-            margin-top: 8px;
         }
 
         .legend-icon {
-            font-size: 18px;
+            font-size: 24px;
+            line-height: 1;
         }
 
         .legend-text {
-            font-size: 13px;
-            color: var(--text-secondary);
+            font-size: 14px;
+            color: var(--text-primary);
         }
 
         .legend-text strong {
             color: var(--accent-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            background: rgba(0,255,136,0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
         }
+
+        /* Keep old skill card styles for single-card layouts if needed */
 
         /* TIPS BOX */
         .tips-box {
             background: rgba(0,255,136,0.05);
             border: 1px solid rgba(0,255,136,0.2);
             border-radius: var(--radius-md);
-            padding: 20px;
-            margin-top: 16px;
+            padding: 24px;
+            margin-top: 24px;
         }
 
         .tips-box h4 {
-            color: var(--accent-primary);
             font-size: 14px;
-            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--accent-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .tips-box ul {
             list-style: none;
+            display: grid;
+            gap: 10px;
         }
 
         .tips-box li {
+            font-size: 14px;
             color: var(--text-secondary);
-            font-size: 13px;
-            padding: 4px 0;
             padding-left: 20px;
             position: relative;
         }
 
         .tips-box li::before {
-            content: "•";
+            content: '→';
             position: absolute;
-            left: 5px;
+            left: 0;
             color: var(--accent-primary);
-        }
-
-        /* ASSESSMENT SECTION */
-        .assessment-card {
-            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
-            border: 2px solid var(--border-accent);
-            border-radius: var(--radius-xl);
-            padding: 40px;
-            text-align: center;
-        }
-
-        .assessment-card h2 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 2.5rem;
-            letter-spacing: 3px;
-            margin-bottom: 8px;
-        }
-
-        .assessment-subtitle {
-            color: var(--text-secondary);
-            margin-bottom: 32px;
-        }
-
-        .flow-requirements {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        @media (max-width: 800px) {
-            .flow-requirements {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        .requirement {
-            background: var(--bg-elevated);
-            border-radius: var(--radius-md);
-            padding: 20px;
-        }
-
-        .requirement h4 {
-            font-size: 12px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-
-        .requirement .value {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .checklist {
-            background: var(--bg-elevated);
-            border-radius: var(--radius-md);
-            padding: 24px;
-            margin-bottom: 32px;
-            text-align: left;
-        }
-
-        .checklist h4 {
-            font-size: 14px;
-            margin-bottom: 16px;
-            color: var(--text-secondary);
-        }
-
-        .checklist-items {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 12px;
-        }
-
-        .checklist-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        .checklist-item::before {
-            content: "☐";
-            font-size: 16px;
-            color: var(--accent-primary);
-        }
-
-        .flow-note {
-            font-style: italic;
-            color: var(--text-secondary);
-            margin-bottom: 32px;
-        }
-
-        /* RUBRIC */
-        .rubric {
-            overflow-x: auto;
-        }
-
-        .rubric h3 {
-            margin-bottom: 16px;
-            text-align: left;
-        }
-
-        .rubric table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-            text-align: left;
-        }
-
-        .rubric th {
-            background: var(--bg-primary);
-            padding: 14px;
-            font-weight: 600;
-            border-bottom: 2px solid var(--border-accent);
-        }
-
-        .rubric td {
-            padding: 14px;
-            border-bottom: 1px solid var(--border-subtle);
-            color: var(--text-secondary);
-        }
-
-        .rubric tr:hover td {
-            background: rgba(255,255,255,0.02);
-        }
-
-        .rubric-note {
-            margin-top: 16px;
-            font-size: 13px;
-            color: var(--text-muted);
         }
 
         /* FOOTER */
-        footer {
+        .footer {
             text-align: center;
-            padding: 60px 20px;
-            background: var(--bg-secondary);
+            padding: 60px 24px;
             border-top: 1px solid var(--border-subtle);
+            margin-top: 60px;
         }
 
-        footer p {
-            color: var(--text-secondary);
+        .footer-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .footer-subtitle {
+            color: var(--text-muted);
             font-size: 14px;
-            margin-bottom: 4px;
-        }
-
-        footer strong {
-            color: var(--text-primary);
         }
 
         /* RESPONSIVE */
-        @media (max-width: 600px) {
-            .hero h1 {
-                font-size: 2.8rem;
+        @media (max-width: 768px) {
+            .hero {
+                padding: 60px 20px 40px;
+                min-height: 60vh;
             }
-            .section-title {
-                font-size: 1.8rem;
+
+            .traffic-container {
+                padding: 28px 20px;
+            }
+
+            .skill-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="hero">
-        <div class="hero-badge">Grade 8 Parkour</div>
-        <h1>MOVEMENT MENU</h1>
-        <p class="subtitle">Find your level. Watch tutorials. Move at your own pace.</p>
-    </div>
-
-    <nav class="nav">
+    <!-- NAVIGATION -->
+    <nav class="nav" id="nav">
         <div class="nav-inner">
-            <a href="#inspiration">Inspiration</a>
-            <a href="#jumps">Jumps</a>
-            <a href="#rolls">Rolls</a>
-            <a href="#vaults">Vaults</a>
-            <a href="#floor">Floor</a>
-            <a href="#balance">Balance</a>
-            <a href="#walls">Wall Work</a>
-            <a href="#flow">Flow</a>
-            <a href="#assessment">Assessment</a>
+            <div class="nav-logo">Grade 8 <span>Parkour</span></div>
+            <div class="nav-links">
+                <a href="#jumps" class="nav-link">Jumps</a>
+                <a href="#rolls" class="nav-link">Rolls</a>
+                <a href="#vaults" class="nav-link">Vaults</a>
+                <a href="#floor" class="nav-link">Floor</a>
+                <a href="#balance" class="nav-link">Balance</a>
+                <a href="#walls" class="nav-link">Wall Work</a>
+                <a href="#flow" class="nav-link">Flow</a>
+                <a href="#assessment" class="nav-link">Assessment</a>
+            </div>
         </div>
     </nav>
 
-    <main class="main">
-
-        <!-- TRAFFIC LIGHT SYSTEM -->
-        <div class="info-card">
-            <h2>🚦 Traffic Light Self-Assessment</h2>
-            <div class="traffic-grid">
-                <div class="traffic-item red">
-                    <div class="traffic-dot"></div>
-                    <div class="traffic-content">
-                        <h4>Exploring</h4>
-                        <p>I'm watching tutorials and attempting this skill. Still figuring it out.</p>
-                    </div>
-                </div>
-                <div class="traffic-item yellow">
-                    <div class="traffic-dot"></div>
-                    <div class="traffic-content">
-                        <h4>Developing</h4>
-                        <p>I can do this sometimes. Getting more consistent with practice.</p>
-                    </div>
-                </div>
-                <div class="traffic-item green">
-                    <div class="traffic-dot"></div>
-                    <div class="traffic-content">
-                        <h4>Got It</h4>
-                        <p>I'm confident with this skill. Ready to move on or help others.</p>
-                    </div>
-                </div>
-                <div class="traffic-item skip">
-                    <div class="traffic-dot"></div>
-                    <div class="traffic-content">
-                        <h4>Skipping</h4>
-                        <p>I've tried it or I don't feel safe. Moving on for now.</p>
-                    </div>
-                </div>
-            </div>
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <p class="hero-subtitle">Grade 8 Parkour</p>
+            <h1 class="hero-unit-title">MOVEMENT MENU</h1>
+            <p class="hero-desc">Find your level. Watch tutorials. Move at your own pace.</p>
         </div>
+    </section>
 
-        <!-- INSPIRATION VIDEO -->
-        <section class="section" id="inspiration">
-            <div class="section-header">
-                <div class="section-icon">🔥</div>
-                <h2 class="section-title">WHAT IS PARKOUR?</h2>
-            </div>
-
-            <div class="skill-category">
-                <div class="video-card">
-                    <div class="video-thumbnail-wrapper">
-                        <a href="https://www.youtube.com/watch?v=4DfQ67E74fU" target="_blank" class="video-thumbnail">
-                            <img src="https://img.youtube.com/vi/4DfQ67E74fU/maxresdefault.jpg" alt="What is Parkour?">
-                            <div class="video-play-btn">
-                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                            </div>
-                        </a>
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        
+        <!-- TRAFFIC LIGHT SYSTEM -->
+        <section class="traffic-section">
+            <div class="traffic-container">
+                <h2 class="traffic-title">🚦 Traffic Light Self-Assessment</h2>
+                <div class="traffic-grid">
+                    <div class="traffic-item red">
+                        <div class="traffic-dot"></div>
+                        <div class="traffic-content">
+                            <h4>Exploring</h4>
+                            <p>I'm watching tutorials and attempting this skill. Still figuring it out.</p>
+                        </div>
                     </div>
-                    <div class="video-info">
-                        <h3>Get Inspired</h3>
-                        <p class="video-desc">This is parkour — efficient movement through any environment. Watch how they use their surroundings creatively and safely.</p>
+                    <div class="traffic-item yellow">
+                        <div class="traffic-dot"></div>
+                        <div class="traffic-content">
+                            <h4>Developing</h4>
+                            <p>I can do this sometimes. Getting more consistent with practice.</p>
+                        </div>
+                    </div>
+                    <div class="traffic-item green">
+                        <div class="traffic-dot"></div>
+                        <div class="traffic-content">
+                            <h4>Got It</h4>
+                            <p>I'm confident with this skill. Ready to move on or help others.</p>
+                        </div>
+                    </div>
+                    <div class="traffic-item skip">
+                        <div class="traffic-dot"></div>
+                        <div class="traffic-content">
+                            <h4>Skipping</h4>
+                            <p>I've tried it or I don't feel safe. Moving on for now.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -720,6 +668,7 @@
             </div>
             <p class="section-desc">Good landings protect your joints. Precision jumps teach you to land exactly where you want.</p>
 
+            <!-- Precision Jump -->
             <div class="skill-category">
                 <div class="video-card">
                     <div class="video-thumbnail-wrapper">
@@ -773,7 +722,6 @@
                 </div>
             </div>
         </section>
-
         <!-- ROLLS SECTION -->
         <section class="section" id="rolls">
             <div class="section-header">
@@ -787,7 +735,7 @@
                 <div class="video-card">
                     <div class="video-thumbnail-wrapper">
                         <a href="https://www.youtube.com/watch?v=6x-cG9giKXY" target="_blank" class="video-thumbnail">
-                            <img src="https://img.youtube.com/vi/6x-cG9giKXY/mqdefault.jpg" alt="Safety Roll Tutorial">
+                            <img src="https://img.youtube.com/vi/6x-cG9giKXY/mqdefault.jpg" alt="Safety Rolls Tutorial">
                             <div class="video-play-btn">
                                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                             </div>
@@ -819,6 +767,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="tips-box">
                     <h4>💡 Key Tips</h4>
                     <ul>
@@ -842,8 +791,8 @@
                         </a>
                     </div>
                     <div class="video-info">
-                        <span class="prerequisite-badge">Complete Safety Roll First</span>
                         <h3>Side Roll</h3>
+                        <span class="prerequisite-badge">Complete Safety Roll First</span>
                         <p class="video-desc">Roll sideways across your back.</p>
                         <div class="progression-list">
                             <a href="https://www.youtube.com/watch?v=6x-cG9giKXY&t=5m45s" target="_blank" class="progression-item">
@@ -868,8 +817,8 @@
                         </a>
                     </div>
                     <div class="video-info">
-                        <span class="prerequisite-badge">Complete Safety Roll First</span>
                         <h3>Back Roll</h3>
+                        <span class="prerequisite-badge">Complete Safety Roll First</span>
                         <p class="video-desc">Rolling backward to your feet.</p>
                         <div class="progression-list">
                             <a href="https://www.youtube.com/watch?v=6x-cG9giKXY&t=7m5s" target="_blank" class="progression-item">
@@ -891,20 +840,20 @@
                 </div>
             </div>
 
-            <!-- Dive Roll -->
+            <!-- Dive Roll & Drop to Roll -->
             <div class="skill-category">
                 <div class="video-card">
                     <div class="video-thumbnail-wrapper">
                         <a href="https://www.youtube.com/watch?v=m-rIsUMjq5U&t=7m32s" target="_blank" class="video-thumbnail">
-                            <img src="https://img.youtube.com/vi/m-rIsUMjq5U/mqdefault.jpg" alt="Dive Roll Tutorial">
+                            <img src="https://img.youtube.com/vi/m-rIsUMjq5U/mqdefault.jpg" alt="Dive Roll and Drop to Roll Tutorial">
                             <div class="video-play-btn">
                                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                             </div>
                         </a>
                     </div>
                     <div class="video-info">
-                        <span class="prerequisite-badge">Complete Safety Roll First</span>
                         <h3>Dive Roll & Drop to Roll</h3>
+                        <span class="prerequisite-badge">Complete Safety Roll First</span>
                         <p class="video-desc">Advanced roll applications - diving over obstacles and rolling from drops.</p>
                         <div class="progression-list">
                             <a href="https://www.youtube.com/watch?v=m-rIsUMjq5U&t=7m32s" target="_blank" class="progression-item">
@@ -953,21 +902,94 @@
                 <div class="section-icon">🧱</div>
                 <h2 class="section-title">VAULTS</h2>
             </div>
-            <p class="section-desc">Vaults help you get over obstacles efficiently. Start with the Safety Vault - it's your go-to when you're unsure.</p>
+            <p class="section-desc">Vaults help you get over obstacles efficiently. Start with the Step Vault - it's your foundation for all other vaults.</p>
+
+            <!-- Step Vault -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=WnHZA0ZD0Qw" target="_blank" class="video-thumbnail">
+                        <img src="https://img.youtube.com/vi/WnHZA0ZD0Qw/mqdefault.jpg" alt="Step Vault Tutorial">
+                        <div class="video-play-btn">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Step Vault</h3>
+                        <p class="video-desc">Your foundation vault - one foot steps on the obstacle as you pass over. Master this before moving on.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=WnHZA0ZD0Qw&t=10s" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">2 hands, pause on top</span>
+                                <span class="progression-time">0:10</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=WnHZA0ZD0Qw&t=1m18s" target="_blank" class="progression-item">
+                                <span class="progression-number">2</span>
+                                <span class="progression-name">2 hands, no pause</span>
+                                <span class="progression-time">1:18</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=WnHZA0ZD0Qw&t=2m7s" target="_blank" class="progression-item">
+                                <span class="progression-number">3</span>
+                                <span class="progression-name">1 hand, no pause</span>
+                                <span class="progression-time">2:07</span>
+                            </a>
+                            <div class="progression-legend">
+                                <span class="legend-icon">🚦</span>
+                                <span class="legend-text">Move to the next step once you're <strong>GREEN</strong> on your tracker</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Side Vault -->
+            <div class="skill-category">
+                <div class="video-card">
+                    <div class="video-thumbnail-wrapper">
+                        <a href="https://www.youtube.com/watch?v=WnHZA0ZD0Qw&t=2m51s" target="_blank" class="video-thumbnail">
+                        <img src="https://img.youtube.com/vi/WnHZA0ZD0Qw/mqdefault.jpg" alt="Side Vault Tutorial">
+                        <div class="video-play-btn">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </a>
+                    </div>
+                    <div class="video-info">
+                        <h3>Side Vault</h3>
+                        <p class="video-desc">Both legs swing to the side as you pass over the obstacle. Builds on the step vault foundation.</p>
+                        <div class="progression-list">
+                            <a href="https://www.youtube.com/watch?v=WnHZA0ZD0Qw&t=2m51s" target="_blank" class="progression-item">
+                                <span class="progression-number">1</span>
+                                <span class="progression-name">Pause on top</span>
+                                <span class="progression-time">2:51</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=WnHZA0ZD0Qw&t=3m37s" target="_blank" class="progression-item">
+                                <span class="progression-number">2</span>
+                                <span class="progression-name">No touch on wall with feet</span>
+                                <span class="progression-time">3:37</span>
+                            </a>
+                            <div class="progression-legend">
+                                <span class="legend-icon">🚦</span>
+                                <span class="legend-text">Move to the next step once you're <strong>GREEN</strong> on your tracker</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Safety Vault -->
             <div class="skill-category">
                 <div class="video-card">
                     <div class="video-thumbnail-wrapper">
                         <a href="https://www.youtube.com/watch?v=OZFnbIOmmIY" target="_blank" class="video-thumbnail">
-                            <img src="https://img.youtube.com/vi/OZFnbIOmmIY/mqdefault.jpg" alt="Safety Vault Tutorial">
-                            <div class="video-play-btn">
-                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                            </div>
-                        </a>
+                        <img src="https://img.youtube.com/vi/OZFnbIOmmIY/mqdefault.jpg" alt="Safety Vault Tutorial">
+                        <div class="video-play-btn">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </a>
                     </div>
                     <div class="video-info">
-                        <h3>Safety Vault (Step Vault)</h3>
+                        <h3>Safety Vault</h3>
                         <p class="video-desc">Your fallback vault - use it when you're unsure. Hand AND foot contact = maximum control.</p>
                         <div class="progression-list">
                             <a href="https://www.youtube.com/watch?v=OZFnbIOmmIY&t=49s" target="_blank" class="progression-item">
@@ -999,11 +1021,11 @@
                 <div class="video-card">
                     <div class="video-thumbnail-wrapper">
                         <a href="https://www.youtube.com/watch?v=3bLX2VJZMgk" target="_blank" class="video-thumbnail">
-                            <img src="https://img.youtube.com/vi/3bLX2VJZMgk/mqdefault.jpg" alt="Lazy Vault Tutorial">
-                            <div class="video-play-btn">
-                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                            </div>
-                        </a>
+                        <img src="https://img.youtube.com/vi/3bLX2VJZMgk/mqdefault.jpg" alt="Lazy Vault Tutorial">
+                        <div class="video-play-btn">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </a>
                     </div>
                     <div class="video-info">
                         <h3>Lazy Vault</h3>
@@ -1024,11 +1046,11 @@
                 <div class="video-card">
                     <div class="video-thumbnail-wrapper">
                         <a href="https://www.youtube.com/watch?v=ar-pYbemlXw" target="_blank" class="video-thumbnail">
-                            <img src="https://img.youtube.com/vi/ar-pYbemlXw/mqdefault.jpg" alt="Speed Vault Tutorial">
-                            <div class="video-play-btn">
-                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                            </div>
-                        </a>
+                        <img src="https://img.youtube.com/vi/ar-pYbemlXw/mqdefault.jpg" alt="Speed Vault Tutorial">
+                        <div class="video-play-btn">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </a>
                     </div>
                     <div class="video-info">
                         <h3>Speed Vault</h3>
@@ -1049,11 +1071,11 @@
                 <div class="video-card">
                     <div class="video-thumbnail-wrapper">
                         <a href="https://www.youtube.com/watch?v=lFvqnWhi-fQ" target="_blank" class="video-thumbnail">
-                            <img src="https://img.youtube.com/vi/lFvqnWhi-fQ/mqdefault.jpg" alt="Monkey Kong Vault Tutorial">
-                            <div class="video-play-btn">
-                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                            </div>
-                        </a>
+                        <img src="https://img.youtube.com/vi/lFvqnWhi-fQ/mqdefault.jpg" alt="Monkey and Kong Vault Tutorial">
+                        <div class="video-play-btn">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </a>
                     </div>
                     <div class="video-info">
                         <h3>Monkey Vault & Kong Vault</h3>
@@ -1086,6 +1108,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="tips-box">
                     <h4>💡 Key Tips</h4>
                     <ul>
@@ -1123,7 +1146,7 @@
             </div>
         </section>
 
-        <!-- FLOOR SECTION -->
+        <!-- FLOOR MOVEMENT SECTION -->
         <section class="section" id="floor">
             <div class="section-header">
                 <div class="section-icon">🤸</div>
@@ -1268,7 +1291,7 @@
                 <div class="video-card">
                     <div class="video-thumbnail-wrapper">
                         <a href="https://www.youtube.com/watch?v=SrJwYTMFagQ" target="_blank" class="video-thumbnail">
-                            <img src="https://img.youtube.com/vi/SrJwYTMFagQ/mqdefault.jpg" alt="Balance Tutorial">
+                            <img src="https://img.youtube.com/vi/SrJwYTMFagQ/mqdefault.jpg" alt="Perpendicular Balance Tutorial">
                             <div class="video-play-btn">
                                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                             </div>
@@ -1333,6 +1356,7 @@
             </div>
         </section>
 
+
         <!-- WALL WORK SECTION -->
         <section class="section" id="walls">
             <div class="section-header">
@@ -1346,7 +1370,7 @@
                 <div class="video-card">
                     <div class="video-thumbnail-wrapper">
                         <a href="https://www.youtube.com/watch?v=arAP26n3Paw" target="_blank" class="video-thumbnail">
-                            <img src="https://img.youtube.com/vi/arAP26n3Paw/mqdefault.jpg" alt="Climb Up Tutorial">
+                            <img src="https://img.youtube.com/vi/arAP26n3Paw/mqdefault.jpg" alt="Basic Climb Ups Tutorial">
                             <div class="video-play-btn">
                                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                             </div>
@@ -1392,8 +1416,8 @@
                         </a>
                     </div>
                     <div class="video-info">
-                        <span class="prerequisite-badge">Complete Basic Climb Ups First</span>
                         <h3>Full Climb Up</h3>
+                        <span class="prerequisite-badge">Complete Basic Climb Ups First</span>
                         <p class="video-desc">Put it all together - the complete climb up movement.</p>
                         <div class="progression-list">
                             <a href="https://www.youtube.com/watch?v=6U1sIgqgPFo" target="_blank" class="progression-item">
@@ -1418,8 +1442,8 @@
                         </a>
                     </div>
                     <div class="video-info">
-                        <span class="prerequisite-badge">Complete Climb Ups First</span>
                         <h3>Wall Run</h3>
+                        <span class="prerequisite-badge">Complete Climb Ups First</span>
                         <p class="video-desc">Run up the wall to gain extra height before grabbing the top.</p>
                         <div class="progression-list">
                             <a href="https://www.youtube.com/watch?v=iZo1t0c__eU&t=45s" target="_blank" class="progression-item">
@@ -1508,88 +1532,129 @@
 
         <!-- ASSESSMENT SECTION -->
         <section class="section" id="assessment">
-            <div class="assessment-card">
-                <h2>🎯 YOUR FLOW ASSESSMENT</h2>
-                <p class="assessment-subtitle">What you need to include in your final parkour flow.</p>
+            <div class="section-header">
+                <div class="section-icon">🎯</div>
+                <h2 class="section-title">YOUR FLOW ASSESSMENT</h2>
+            </div>
+            <p class="section-desc">What you need to include in your final parkour flow.</p>
 
-                <div class="flow-requirements">
-                    <div class="requirement">
-                        <h4>Duration</h4>
-                        <div class="value">1-2 MIN</div>
+            <div class="assessment-container" style="background: var(--bg-card); border-radius: var(--radius-lg); padding: 32px; margin-top: 24px; border: 2px solid var(--border-accent);">
+                
+                <div style="text-align: center; margin-bottom: 32px;">
+                    <h3 style="font-size: 28px; color: var(--accent-primary); margin-bottom: 8px;">⏱️ 1-2 MINUTES</h3>
+                </div>
+
+                <div style="background: var(--bg-elevated); border-radius: var(--radius-md); padding: 24px; margin-bottom: 24px;">
+                    <h4 style="color: var(--accent-secondary); margin-bottom: 16px; font-size: 20px;">MOVEMENT TYPES</h4>
+                    <p style="color: var(--text-secondary); margin-bottom: 16px;">Include movements from these categories:</p>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px;">
+                        <div style="background: var(--bg-card); padding: 12px; border-radius: 8px; text-align: center;">☐ JUMPS</div>
+                        <div style="background: var(--bg-card); padding: 12px; border-radius: 8px; text-align: center;">☐ ROLLS</div>
+                        <div style="background: var(--bg-card); padding: 12px; border-radius: 8px; text-align: center;">☐ VAULTS</div>
+                        <div style="background: var(--bg-card); padding: 12px; border-radius: 8px; text-align: center;">☐ FLOOR</div>
+                        <div style="background: var(--bg-card); padding: 12px; border-radius: 8px; text-align: center;">☐ BALANCE</div>
+                        <div style="background: var(--bg-card); padding: 12px; border-radius: 8px; text-align: center;">☐ WALL WORK</div>
                     </div>
-                    <div class="requirement">
-                        <h4>Obstacles</h4>
-                        <div class="value">3+</div>
+                    <p style="color: var(--accent-primary); font-weight: 600; text-align: center; font-size: 18px;">ADVANCED = All 6 categories ✓</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+                    <div style="background: var(--bg-elevated); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+                        <h4 style="color: var(--accent-secondary); margin-bottom: 8px;">🏃 OBSTACLES</h4>
+                        <p style="font-size: 24px; font-weight: 600;">3+ Different</p>
                     </div>
-                    <div class="requirement">
-                        <h4>Personal</h4>
-                        <div class="value">1 Challenge</div>
-                    </div>
-                    <div class="requirement">
-                        <h4>Control</h4>
-                        <div class="value">Safe ✓</div>
+                    <div style="background: var(--bg-elevated); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+                        <h4 style="color: var(--accent-warm); margin-bottom: 8px;">⭐ CHALLENGE</h4>
+                        <p style="font-size: 24px; font-weight: 600;">1 Personal Moment</p>
                     </div>
                 </div>
 
-                <div class="checklist">
-                    <h4>MOVEMENT TYPES — Include movements from these categories:</h4>
-                    <div class="checklist-items">
-                        <div class="checklist-item">JUMPS</div>
-                        <div class="checklist-item">ROLLS</div>
-                        <div class="checklist-item">VAULTS</div>
-                        <div class="checklist-item">FLOOR</div>
-                        <div class="checklist-item">BALANCE</div>
-                        <div class="checklist-item">WALL WORK</div>
-                    </div>
-                    <p style="margin-top: 16px; color: var(--accent-primary); font-size: 14px;">ADVANCED = All 6 categories ✓</p>
+                <div style="background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,204,255,0.1)); border-radius: var(--radius-md); padding: 20px; text-align: center; border: 1px solid var(--accent-primary);">
+                    <h4 style="color: var(--accent-primary); margin-bottom: 8px;">✓ SAFE & CONTROLLED</h4>
+                    <p style="color: var(--text-secondary);">Throughout your entire flow</p>
                 </div>
 
-                <p class="flow-note">It's not just WHAT moves you do — it's HOW you connect them</p>
+                <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border-subtle); text-align: center;">
+                    <p style="font-size: 18px; color: var(--text-primary); font-weight: 500;">It's not just WHAT moves you do — it's HOW you connect them</p>
+                </div>
 
-                <div class="rubric">
-                    <h3>RUBRIC</h3>
-                    <table>
-                        <tr>
-                            <th>Criterion</th>
-                            <th>Beginning</th>
-                            <th>Proficient</th>
-                            <th>Advanced</th>
-                        </tr>
-                        <tr>
-                            <td><strong>Movement Variety</strong></td>
-                            <td>1-3 types</td>
-                            <td>4-5 types</td>
-                            <td>All 6 categories</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Flow & Transitions</strong></td>
-                            <td>Stops between moves</td>
-                            <td>Mostly connected</td>
-                            <td>Seamless transitions</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Personal Challenge</strong></td>
-                            <td>Comfort zone</td>
-                            <td>Attempted challenge</td>
-                            <td>Pushed limits with control</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Control & Safety</strong></td>
-                            <td>Rushed/uncertain</td>
-                            <td>Controlled & safe</td>
-                            <td>Smooth & confident</td>
-                        </tr>
+            </div>
+
+            <!-- Rubric Preview -->
+            <div style="margin-top: 32px;">
+                <h3 style="margin-bottom: 16px;">RUBRIC</h3>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: var(--radius-md); overflow: hidden;">
+                        <thead>
+                            <tr style="background: var(--bg-elevated);">
+                                <th style="padding: 16px; text-align: left; border-bottom: 1px solid var(--border-subtle);">Criterion</th>
+                                <th style="padding: 16px; text-align: left; border-bottom: 1px solid var(--border-subtle); color: #ff6b6b;">Beginning</th>
+                                <th style="padding: 16px; text-align: left; border-bottom: 1px solid var(--border-subtle); color: #ffc107;">Proficient</th>
+                                <th style="padding: 16px; text-align: left; border-bottom: 1px solid var(--border-subtle); color: var(--accent-primary);">Advanced</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); font-weight: 600;">Movement Variety</td>
+                                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary);">1-3 types</td>
+                                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary);">4-5 types</td>
+                                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary);">All 6 categories</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); font-weight: 600;">Flow & Transitions</td>
+                                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary);">Stops between moves</td>
+                                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary);">Mostly connected</td>
+                                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary);">Seamless transitions</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); font-weight: 600;">Personal Challenge</td>
+                                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary);">Comfort zone</td>
+                                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary);">Attempted challenge</td>
+                                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary);">Pushed limits with control</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 16px; font-weight: 600;">Control & Safety</td>
+                                <td style="padding: 16px; color: var(--text-secondary);">Rushed/uncertain</td>
+                                <td style="padding: 16px; color: var(--text-secondary);">Controlled & safe</td>
+                                <td style="padding: 16px; color: var(--text-secondary);">Smooth & confident</td>
+                            </tr>
+                        </tbody>
                     </table>
-                    <p class="rubric-note">You will self-assess using this rubric. Your teacher will agree or adjust.</p>
                 </div>
+                <p style="margin-top: 16px; color: var(--text-secondary); font-size: 14px; text-align: center;">You will self-assess using this rubric. Your teacher will agree or adjust.</p>
             </div>
         </section>
 
     </main>
 
-    <footer>
-        <p><strong>Your Movement, Your Way</strong></p>
-        <p>Growth matters more than perfection. Challenge yourself at YOUR level.</p>
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p class="footer-title">Your Movement, Your Way</p>
+        <p class="footer-subtitle">Growth matters more than perfection. Challenge yourself at YOUR level.</p>
     </footer>
+
+    <script>
+        // Show nav on scroll
+        const nav = document.getElementById('nav');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                nav.classList.add('visible');
+            } else {
+                nav.classList.remove('visible');
+            }
+        });
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
